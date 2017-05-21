@@ -172,7 +172,7 @@ class GraphicRecord:
             fig, ax = plt.subplots(1, figsize=(figure_width, 2 * max_level))
         self.initialize_ax(ax, draw_line=draw_line, with_ruler=with_ruler)
         overflowing_annotations = []
-        for feature, level in features_levels.items():
+        for feature, level in list(features_levels.items()):
             self.plot_feature(ax=ax, feature=feature, level=level)
             if feature.label is not None:
                 text, overflowing, (x1, x2) = self.annotate_feature(
@@ -186,7 +186,7 @@ class GraphicRecord:
                     ))
         annotations_levels = compute_features_levels(overflowing_annotations)
         labels_data = {}
-        for feature, level in annotations_levels.items():
+        for feature, level in list(annotations_levels.items()):
             text = feature.data["text"]
             x, y = text.get_position()
             new_y = ((max_level + 1) * self.feature_level_width +
@@ -257,7 +257,7 @@ class GraphicRecord:
         ax, plot_data = self.plot(figure_width=figure_width)
         width, height = [int(100*e) for e in ax.figure.get_size_inches()]
         plt.close(ax.figure)
-        max_y = max([data["annotation_y"] for f, data in plot_data.items()])
+        max_y = max([data["annotation_y"] for f, data in list(plot_data.items())])
 
         hover = HoverTool(tooltips="@hover_html")
         p = figure(plot_width=width, plot_height=height,
@@ -274,7 +274,7 @@ class GraphicRecord:
                     hover_html=(feature.html if feature.html is not None else
                                 feature.label)
                 )
-                for feature, pdata in plot_data.items()
+                for feature, pdata in list(plot_data.items())
             ]))
         )
         p.text(
@@ -283,7 +283,7 @@ class GraphicRecord:
             source=ColumnDataSource(pd.DataFrame.from_records([
                 dict(x=feature.x_center, y=pdata["annotation_y"],
                      text=feature.label, color=feature.color)
-                for feature, pdata in plot_data.items()
+                for feature, pdata in list(plot_data.items())
             ]))
         )
         p.segment(
@@ -292,7 +292,7 @@ class GraphicRecord:
             source=ColumnDataSource(pd.DataFrame.from_records([
                 dict(x0=feature.x_center, x1=feature.x_center,
                      y0=pdata["annotation_y"], y1=pdata["feature_y"])
-                for feature, pdata in plot_data.items()
+                for feature, pdata in list(plot_data.items())
             ]))
         )
 
